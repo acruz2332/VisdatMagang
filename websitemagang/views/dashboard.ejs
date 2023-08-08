@@ -1,0 +1,581 @@
+<html>
+<head>
+    <title>ECharts Bar Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.2.1/echarts.min.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css" type="text/css">
+    <link rel="stylesheet" href="css/sidebar.css" type="text/css">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body class="body-web">
+  
+    <div >
+      <div class='sidebar-background'>
+        <div class='sidebar-profile'>
+            
+            <p class='sidebar-text'><img src="css/profile.png" style="width: 45px; height: 45px;" /> Agustinus Acruz </p>
+        </div>
+        <br><br>
+        <div class='sidebar-link' style="top: 21%;">
+            <a href="/data"> ke halaman data</a>
+        </div>
+
+        <div class='sidebar-link' style="top: 29%;">
+          <a href="/dashboard"> ke halaman dashboard</a>
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="box-wrapper" style="margin-right: 240px;">
+      <div class="card-visualize" style="width: 400; height: 300;">
+        <div id="chartContainer" style="width: 400px; height: 300px;"></div>
+      </div>
+    </div>
+
+    <div class="box-wrapper" style="margin-right: 260px;">
+      <br>
+      <br>
+      <br>
+      <form method="post" action="/dashboard">
+        Start: <input type="date" id="start" name="start">
+        End: <input type="date" id="end" name="end">
+        <br><br>
+        <button type="submit" class="btn btn-primary"> Filter </button>
+      </form>
+  
+      <form method="get" action="/dashboard">
+        <button type="submit" class="btn btn-secondary"> Reset </button>
+      </form>
+     </div>
+
+    <div class="box-wrapper" style="margin-right: 240px;">
+      <div class="card-visualize-float-right" style="width: 550; height: 660;">
+        <label for="chartNightingale_detik"> <h2>Nightingale detik</h2></label>
+        <div id="chartNightingale_detik" style="width: 500px; height: 500px;"></div>
+      </div>
+
+      <div class='card-visualize-float-right' style="width: 550; height: 660;">
+        <label for="chartNightingale_kompas"> <h2>Nightingale kompas</h2></label>
+        <div id="chartNightingale_kompas" style="width: 550px; height: 600px;"></div>
+      </div>
+    </div>
+
+    <div class="box-wrapper card-visualize" style="margin-right: 430px;">
+      <label for="bar_sentimen"> <h2>Bar sentimen</h2></label>
+      <div id="bar_sentimen" style="width: 850px; height: 600px;"></div>
+    </div>
+
+    <div class="box-wrapper" style="margin-right: 240px;">
+      <div class="box-wrapper card-visualize">
+        <label for="chartlinepie_detik"> <h2>Linepie detik</h2></label>
+        <div id="chartlinepie_detik" style="width: 550px; height: 600px;"></div>
+      </div>
+      
+  
+      <div class="box-wrapper card-visualize">
+        <label for="chartlinepie_kompas"> <h2>Linepie Kompas</h2></label>
+        <div id="chartlinepie_kompas" style="width: 550px; height: 600px;"></div>
+      </div>
+    </div>
+    
+  <!-- ================================ Bar Chart ==================================== -->
+    <script>
+        // Access the passed chartData variable
+        const chartData =  <%-JSON.stringify(chartData)%>.bar;
+        // Create and render the chart
+        const chartContainer = document.getElementById('chartContainer');
+        const chart = echarts.init(chartContainer);
+
+        // Prepare data for x-axis and y-axis
+        const xData = chartData.map(dataPoint => dataPoint.name);
+        const yData = chartData.map(dataPoint => dataPoint.value);
+
+        const options = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'
+              }
+            },
+            title: {
+                text: 'Bar Chart',
+            },
+            xAxis: {
+                type: 'category',
+                data: xData,
+            },
+            yAxis: {
+                type: 'value',
+            },
+            series: [
+                {
+                    type: 'bar',
+                    data: yData,
+                },
+            ],
+        };
+
+        chart.setOption(options);
+    </script>
+    <!-- ========================== Nightingale chart DETIK ============================ -->
+    <script>
+        const chartData_ng_detik = <%-JSON.stringify(chartData)%>.nightingale_detik;
+
+        const chartContainer_ng_detik = document.getElementById("chartNightingale_detik");
+        const chart_ng_detik = echarts.init(chartContainer_ng_detik);
+
+        chartData_ng_detiks = chartData_ng_detik.sort((a, b) => {
+          if (a.value > b.value) {
+            return -1;
+          }
+        });
+
+        option_ng_detik = {
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+          legend: {
+            top: 'bottom'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: { show: true },
+              dataView: { show: true, readOnly: false },
+              restore: { show: true },
+              saveAsImage: { show: true }
+            }
+          },
+          series: [
+            {
+              name: 'Jumlah data',
+              type: 'pie',
+              radius: [30, 180],
+              center: ['50%', '50%'],
+              roseType: 'area',
+              itemStyle: {
+                borderRadius: 8
+              },
+              data: chartData_ng_detiks,
+            }
+          ]
+        }
+
+        chart_ng_detik.setOption(option_ng_detik);
+    </script>
+    <!-- ========================== Nightingale chart KOMPAS ============================ -->
+    <script>
+      const chartData_ng_kompas = <%-JSON.stringify(chartData)%>.nightingale_kompas;
+
+      const chartContainer_ng_kompas = document.getElementById("chartNightingale_kompas");
+      const chart_ng_kompas = echarts.init(chartContainer_ng_kompas);
+
+      chartData_ng_kompass = chartData_ng_kompas.sort((a, b) => {
+          if (a.value > b.value) {
+            return -1;
+          }
+        });
+
+      option_ng_kompas = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          top: 'bottom'
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        series: [
+          {
+            name: 'Jumlah data',
+            type: 'pie',
+            radius: [30, 180],
+            center: ['50%', '50%'],
+            roseType: 'area',
+            itemStyle: {
+              borderRadius: 8
+            },
+            data: chartData_ng_kompass,
+          }
+        ]
+      }
+
+      chart_ng_kompas.setOption(option_ng_kompas);
+  </script>
+
+
+<!-- =============================================LINE PIE DETIK============================================ -->
+  <script>
+    // Access the passed chartData variable
+    const chartData_lp_detik =  <%-JSON.stringify(chartData)%>.linepie_detik;
+    // Create and render the chart
+    const chartContainer_lp_detik = document.getElementById('chartlinepie_detik');
+    const chart_lp_detik = echarts.init(chartContainer_lp_detik);
+
+  option_lp_detik = {
+    legend: {},
+    tooltip: {
+      trigger: 'axis',
+      showContent: false
+    },
+    dataset: {
+      source: [
+      chartData_lp_detik[0],
+      chartData_lp_detik[1],
+      chartData_lp_detik[2],
+      chartData_lp_detik[3]
+      ]
+    },
+    xAxis: { type: 'category' },
+    yAxis: { gridIndex: 0 },
+    grid: { top: '55%' },
+    series: [
+      {
+        type: 'line',
+        smooth: true,
+        seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' }
+      },
+      {
+        type: 'line',
+        smooth: true,
+        seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' }
+      },
+      {
+        type: 'line',
+        smooth: true,
+        seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' }
+      },
+      {
+        type: 'line',
+        smooth: true,
+        seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' }
+      },
+      {
+        type: 'pie',
+        id: 'pie',
+        radius: '30%',
+        center: ['50%', '25%'],
+        emphasis: {
+          focus: 'self'
+        },
+        label: {
+          formatter: '{b}: {@2012} ({d}%)'
+        },
+        encode: {
+          itemName: 'product',
+          value: '2012',
+          tooltip: '2012'
+        }
+      }
+    ]
+  };
+  chart_lp_detik.on('updateAxisPointer', function (event) {
+    const xAxisInfo = event.axesInfo[0];
+    if (xAxisInfo) {
+      const dimension = xAxisInfo.value + 1;
+      chart_lp_detik.setOption({
+        series: {
+          id: 'pie',
+          label: {
+            formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+          },
+          encode: {
+            value: dimension,
+            tooltip: dimension
+          }
+        }
+      });
+    }
+  });
+  chart_lp_detik.setOption(option_lp_detik);
+
+  </script>
+
+
+<!-- =============================================LINE PIE kompas============================================ -->
+<script>
+  // Access the passed chartData variable
+  const chartData_lp_kompas =  <%-JSON.stringify(chartData)%>.linepie_kompas;
+  // Create and render the chart
+  const chartContainer_lp_kompas = document.getElementById('chartlinepie_kompas');
+  const chart_lp_kompas = echarts.init(chartContainer_lp_kompas);
+
+option_lp_kompas = {
+  legend: {},
+  tooltip: {
+    trigger: 'axis',
+    showContent: false
+  },
+  dataset: {
+    source: [
+    chartData_lp_kompas[0],
+    chartData_lp_kompas[1],
+    chartData_lp_kompas[2],
+    chartData_lp_kompas[3]
+    ]
+  },
+  xAxis: { type: 'category' },
+  yAxis: { gridIndex: 0 },
+  grid: { top: '55%' },
+  series: [
+    {
+      type: 'line',
+      smooth: true,
+      seriesLayoutBy: 'row',
+      emphasis: { focus: 'series' }
+    },
+    {
+      type: 'line',
+      smooth: true,
+      seriesLayoutBy: 'row',
+      emphasis: { focus: 'series' }
+    },
+    {
+      type: 'line',
+      smooth: true,
+      seriesLayoutBy: 'row',
+      emphasis: { focus: 'series' }
+    },
+    {
+      type: 'line',
+      smooth: true,
+      seriesLayoutBy: 'row',
+      emphasis: { focus: 'series' }
+    },
+    {
+      type: 'pie',
+      id: 'pie',
+      radius: '30%',
+      center: ['50%', '25%'],
+      emphasis: {
+        focus: 'self'
+      },
+      label: {
+        formatter: '{b}: {@2012} ({d}%)'
+      },
+      encode: {
+        itemName: 'product',
+        value: '2012',
+        tooltip: '2012'
+      }
+    }
+  ]
+};
+chart_lp_kompas.on('updateAxisPointer', function (event) {
+  const xAxisInfo = event.axesInfo[0];
+  if (xAxisInfo) {
+    const dimension = xAxisInfo.value + 1;
+    chart_lp_kompas.setOption({
+      series: {
+        id: 'pie',
+        label: {
+          formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+        },
+        encode: {
+          value: dimension,
+          tooltip: dimension
+        }
+      }
+    });
+  }
+});
+chart_lp_kompas.setOption(option_lp_kompas);
+
+</script>
+
+<!-- ========================== bar chart sentimen ============================ -->
+<script>
+  const chartData_sentimen = <%-JSON.stringify(chartData)%>.bar_sentimen;
+  console.log(chartData_sentimen)
+  var app = {};
+  const chartContainer_sentimen = document.getElementById("bar_sentimen");
+  const chart_sentimen = echarts.init(chartContainer_sentimen);
+
+  const posList = [
+  'left',
+  'right',
+  'top',
+  'bottom',
+  'inside',
+  'insideTop',
+  'insideLeft',
+  'insideRight',
+  'insideBottom',
+  'insideTopLeft',
+  'insideTopRight',
+  'insideBottomLeft',
+  'insideBottomRight'
+];
+app.configParameters = {
+  rotate: {
+    min: -90,
+    max: 90
+  },
+  align: {
+    options: {
+      left: 'left',
+      center: 'center',
+      right: 'right'
+    }
+  },
+  verticalAlign: {
+    options: {
+      top: 'top',
+      middle: 'middle',
+      bottom: 'bottom'
+    }
+  },
+  position: {
+    options: posList.reduce(function (map, pos) {
+      map[pos] = pos;
+      return map;
+    }, {})
+  },
+  distance: {
+    min: 0,
+    max: 100
+  }
+};
+app.config = {
+  rotate: 90,
+  align: 'left',
+  verticalAlign: 'middle',
+  position: 'insideBottom',
+  distance: 15,
+  onChange: function () {
+    const labelOption = {
+      rotate: app.config.rotate,
+      align: app.config.align,
+      verticalAlign: app.config.verticalAlign,
+      position: app.config.position,
+      distance: app.config.distance
+    };
+    chart_sentimen.setOption({
+      series: [
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        },
+        {
+          label: labelOption
+        }
+      ]
+    });
+  }
+};
+const labelOption = {
+  show: true,
+  position: app.config.position,
+  distance: app.config.distance,
+  align: app.config.align,
+  verticalAlign: app.config.verticalAlign,
+  rotate: app.config.rotate,
+  formatter: '{c}  {name|{a}}',
+  fontSize: 16,
+  rich: {
+    name: {}
+  }
+};
+
+option_sentimen = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+  legend: {
+    data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+  },
+  toolbox: {
+    show: true,
+    orient: 'vertical',
+    left: 'right',
+    top: 'center',
+    feature: {
+      mark: { show: true },
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar', 'stack'] },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  xAxis: [
+    {
+      type: 'category',
+      axisTick: { show: false },
+      data: ['Detik', 'Kompas']
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: 'Total',
+      type: 'bar',
+      barGap: 0,
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: chartData_sentimen.total
+    },
+    {
+      name: 'Positif',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: chartData_sentimen.positif
+    },
+    {
+      name: 'Netral',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: chartData_sentimen.netral
+    },
+    {
+      name: 'Negatif',
+      type: 'bar',
+      label: labelOption,
+      emphasis: {
+        focus: 'series'
+      },
+      data: chartData_sentimen.negatif
+    }
+  ]
+};
+
+chart_sentimen.setOption(option_sentimen)
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<%- include('layout.ejs'); %>
+<div >
+    <div class='sidebar-background'>
+      <div class='sidebar-profile'>
+          
+          <p class='sidebar-text'><img src="css/profile.png" style="width: 45px; height: 45px;" /> Agustinus Acruz </p>
+      </div>
+      <br><br>
+      <div class='sidebar-link' style="top: 21%;">
+          <a href="/data"> ke halaman data</a>
+      </div>
+
+      <div class='sidebar-link' style="top: 29%;">
+        <a href="/dashboard"> ke halaman dashboard</a>
+      </div>
+    </div>
+    
+  </div>
+  <div class="box-wrapper" style="margin-right: 260px;">
+    <form method="post" action="/data" class="form_inline">
+      <label for="sumber">Sumber: </label>
+      <select name="sumber" id="sumber" onchange="label_generator(value)">
+        <option disabled selected value> -- select an option -- </option>
+        <option value="detik"  >Detik</option>
+        <option value="kompas" >Kompas</option>
+      </select>
+      <label for="sentimen">Sentimen: </label>
+      <select name="sentimen" id="sentimen">
+        <option disabled selected value></option>
+        <option value="Positif">Positif</option>
+        <option value="Netral">Netral</option>
+        <option value="Negatif">Negatif</option>
+      </select>
+      <label for="label">Label:</label>
+      <select name="label" id="label"></select>
+      <button type="submit" class="btn btn-primary"> Filter </button>
+    </form>
+
+    <form method="get" action="/data" class="form_inline">
+      <button type="submit" class="btn btn-secondary"> Reset </button>
+    </form>
+   </div>
+
+
+  <div style="padding-left: 300px;">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Sumber</th>
+            <th scope="col">Judul</th>
+            <th scope="col">Konten</th>
+            <th scope="col">Label</th>
+            <th scope="col">Sentimen</th>
+          </tr>
+        </thead>
+        <tbody id="table_sentimen">
+        </tbody>
+      </table>
+  </div>
+
+  <script>
+
+
+  const datas = <%-JSON.stringify(AllDatas)%>;
+  
+    let content = ``;
+    let  i = 1;
+    datas.forEach((item, index) => {
+      content += `<tr><th scope='row'>${i}</th><td>${item.sumber}</td><td>${item.title}</td><td>${item.content}</td><td>${item.label}</td><td>${item.sentimen}</td></tr>`;
+      i++;
+    })
+
+    document.getElementById("table_sentimen").innerHTML = content;
+
+    function label_generator (src) {
+      if (src === 'detik'){
+        let detik_label = `<option disabled selected value>None</option>`;
+        const count_detik = datas.filter(item => item.sumber === 'detik');
+        const label_detik = [...new Set(count_detik.map(item => item.label))];
+        label_detik.forEach((item, index) => {
+          detik_label += `<option value="${item}">${item}</option>`
+        })
+
+        document.getElementById("label").innerHTML = detik_label;
+        
+      }else if (src === 'kompas'){
+        let kompas_label = `<option disabled selected value>None</option>`;
+        const count_kompas = datas.filter(item => item.sumber === 'kompas');
+        const label_kompas = [...new Set(count_kompas.map(item => item.label))];
+        label_kompas.forEach((item, index) => {
+          kompas_label += `<option value="${item}">${item}</option>`
+        })
+
+        document.getElementById("label").innerHTML = kompas_label;
+      }
+
+    }
+  </script>
+
+</body>
+</html>

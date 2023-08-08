@@ -1,0 +1,36 @@
+.sidebar-background{
+    border-right: 1px dashed rgb(201, 201, 201);
+    position: fixed;
+    width: 290px;
+    height: 100%;
+    display: block;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+
+}
+
+.sidebar-profile{
+    position: absolute;
+    top: 8%;
+    left: 10%;
+    align-content: center;
+    text-align: center;
+    width: 230px;
+    height: 60px;
+    background-color: #EDEFF1;
+    border-radius: 10px;
+}
+
+.sidebar-link{
+    position: absolute;
+    left: 10%;
+    align-content: center;
+    text-align: center;
+    width: 230px;
+    height: 60px;
+    background-color: #EDEFF1;
+    border-radius: 10px;
+}
+
+.sidebar-text{
+    margin-top: 8px;
+}

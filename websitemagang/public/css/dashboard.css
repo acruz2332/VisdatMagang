@@ -1,0 +1,45 @@
+.body-web{
+    background-color: #ffffff;
+};
+
+.tumbal{
+    height: 1200px;
+};
+
+.body-wrapper-custom{
+    position: relative;
+    display: block;
+    padding-top: 70px;
+    padding-left: 20px;
+}
+
+.card-visualize{
+    margin-left: 1250px;
+    margin: 20px;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    border-radius: 15px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;    
+}
+
+.card-visualize-float-right{
+    margin: 20px;
+    float: right;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    border-radius: 15px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;    
+}
+
+.box-wrapper{
+    margin: 20px;
+    text-align: center;
+    align-items: start;
+    float: right;
+}
+
+.form_inline{
+    display: inline;
+}
