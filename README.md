@@ -1,4 +1,4 @@
-# VisdatMagang
+# Visualisasi Data
 
 dataset = dataset from scraping <br />
 jupyter notebook = cleaning from scraped data and modelling <br />
